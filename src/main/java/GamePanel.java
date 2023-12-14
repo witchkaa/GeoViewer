@@ -7,7 +7,7 @@ import java.awt.geom.Path2D;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapPanel extends JPanel {
+public class GamePanel extends JPanel {
 
     private static final double ZOOM_FACTOR = 1.1;
 
@@ -17,41 +17,37 @@ public class MapPanel extends JPanel {
     private double scale = 1.0;
     private double offsetX = 0.0;
     private double offsetY = 0.0;
-
-    // Додали текстове поле для введення назви країни
     private JTextField countryInputField;
-
-    // Лічильник правильно введених країн
     private int correctCountryCounter = 0;
     private JLabel countryCounterLabel;
 
-    public MapPanel(Map<String, Country> countries) {
-        this.countries = countries;
-        this.selectedCountries = new HashMap<>();
+    public GamePanel() {
+        try {
+            countries = Country.loadCountries("src/main/resources/world.geojson");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        selectedCountries = new HashMap<>();
 
         addMouseListener(new MapMouseListener());
         addMouseWheelListener(this::handleMouseWheel);
         addMouseMotionListener(new MapMouseMotionListener());
 
-        // Ініціалізуємо текстове поле
         countryInputField = new JTextField(20);
         countryInputField.addActionListener(e -> {
-            // Отримуємо назву країни з текстового поля і виділяємо її
             String inputCountry = countryInputField.getText().trim();
             if (!inputCountry.isEmpty()) {
                 if (highlightCountry(inputCountry)) {
                     correctCountryCounter++;
                     updateCountryCounterLabel();
                 }
-                countryInputField.setText(""); // Очищаємо поле після введення
+                countryInputField.setText("");
             }
         });
 
-        // Додаємо текстове поле на панель
         add(countryInputField);
 
-        // Лічильник правильно введених країн
-        countryCounterLabel = new JLabel("Кількість країн: 0");
+        countryCounterLabel = new JLabel("Кількість країн: 0/197");
         add(countryCounterLabel);
     }
 
@@ -60,14 +56,12 @@ public class MapPanel extends JPanel {
         scale *= scaleFactor;
         repaint();
     }
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         Graphics2D g2d = (Graphics2D) g;
 
-        // Рисуємо кордони
         g2d.setColor(Color.BLACK);
         for (Country country : countries.values()) {
             Geometry geometry = country.getGeometry();
@@ -76,7 +70,6 @@ public class MapPanel extends JPanel {
             }
         }
 
-        // Рисуємо заливку для виділених країн
         for (String selectedCountry : selectedCountries.keySet()) {
             if (selectedCountries.get(selectedCountry)) {
                 g2d.setColor(Color.RED);
@@ -110,7 +103,6 @@ public class MapPanel extends JPanel {
                 }
             }
         }
-
         g2d.draw(path);
     }
 
@@ -129,7 +121,6 @@ public class MapPanel extends JPanel {
                 }
             }
         }
-
         g2d.fill(path);
     }
 
@@ -154,7 +145,6 @@ public class MapPanel extends JPanel {
         }
     }
 
-    // Додаємо метод для виділення країни по назві
     private boolean highlightCountry(String countryName) {
         if (countries.containsKey(countryName) && !selectedCountries.containsKey(countryName)) {
             selectedCountries.put(countryName, true);
@@ -164,9 +154,8 @@ public class MapPanel extends JPanel {
         return false;
     }
 
-    // Оновлюємо лічильник правильно введених країн на екрані
     private void updateCountryCounterLabel() {
-        countryCounterLabel.setText("Кількість країн: " + correctCountryCounter);
+        countryCounterLabel.setText("Кількість країн: " + correctCountryCounter + "/197");
     }
 }
 

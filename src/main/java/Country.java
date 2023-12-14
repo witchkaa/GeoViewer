@@ -12,6 +12,51 @@ import java.util.Map;
 public class Country {
     private String name;
     private Geometry geometry;
+    private String capital;
+    private long population;
+    private long area;
+    private String currency;
+    private float hdi;
+
+    public String getCapital() {
+        return capital;
+    }
+
+    public void setCapital(String capital) {
+        this.capital = capital;
+    }
+
+    public long getPopulation() {
+        return population;
+    }
+
+    public void setPopulation(long population) {
+        this.population = population;
+    }
+
+    public long getArea() {
+        return area;
+    }
+
+    public void setArea(long area) {
+        this.area = area;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public float getHdi() {
+        return hdi;
+    }
+
+    public void setHdi(float hdi) {
+        this.hdi = hdi;
+    }
 
     public Country(String name, Geometry geometry) {
         this.name = name;

@@ -1,34 +1,41 @@
-
-
 import javax.swing.*;
-
-import java.util.Map;
+import java.awt.*;
 
 public class MapViewer extends JFrame {
-
-    private Map<String, Country> countries;
-
     public MapViewer() {
-        try {
-            this.countries = Country.loadCountries("src/main/java/world.geojson");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        setTitle("World Map Viewer");
+        setTitle("Country Explorer");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
-        setLocationRelativeTo(null);
 
-        MapPanel mapPanel = new MapPanel(countries);
-        JScrollPane scrollPane = new JScrollPane(mapPanel);
-        add(scrollPane);
+        // Create buttons
+        JButton gameButton = new JButton("Play Game");
+        JButton attributesButton = new JButton("Edit Country Attributes");
 
-        setVisible(true);
+        // Add action listeners to buttons
+        gameButton.addActionListener(e -> openGameWindow());
+
+        attributesButton.addActionListener(e -> openAttributesWindow());
+
+        // Create layout and add components
+        JPanel panel = new JPanel(new GridLayout(2, 1));
+        panel.add(gameButton);
+        panel.add(attributesButton);
+
+        getContentPane().add(panel);
+        pack();
+
+    }
+
+    private void openGameWindow() {
+        SwingUtilities.invokeLater(GameFrame::new);
+
+    }
+
+    private void openAttributesWindow() {
+        SwingUtilities.invokeLater(AttrFrame::new);
+
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MapViewer());
+        SwingUtilities.invokeLater(() -> new MapViewer().setVisible(true));
     }
 }
-
