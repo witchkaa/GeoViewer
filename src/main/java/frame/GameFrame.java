@@ -9,7 +9,7 @@ public class GameFrame extends JFrame {
     public GameFrame() {
 
         setTitle("Country Game");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
 
