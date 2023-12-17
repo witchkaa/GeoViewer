@@ -1,3 +1,7 @@
+package frame;
+
+import panel.AttrPanel;
+
 import javax.swing.*;
 
 public class AttrFrame extends JFrame {

@@ -1,3 +1,6 @@
+import frame.AttrFrame;
+import frame.GameFrame;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -8,14 +11,12 @@ public class MapViewer extends JFrame {
 
         // Create buttons
         JButton gameButton = new JButton("Play Game");
-        JButton attributesButton = new JButton("Edit Country Attributes");
+        JButton attributesButton = new JButton("Edit country Attributes");
 
-        // Add action listeners to buttons
         gameButton.addActionListener(e -> openGameWindow());
 
         attributesButton.addActionListener(e -> openAttributesWindow());
 
-        // Create layout and add components
         JPanel panel = new JPanel(new GridLayout(2, 1));
         panel.add(gameButton);
         panel.add(attributesButton);
