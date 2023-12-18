@@ -7,7 +7,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AttrPanel extends MapPanel {
     private List<Country> addedCountries;
@@ -20,6 +22,7 @@ public class AttrPanel extends MapPanel {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        addedCountries = new ArrayList<>();
         setLayout(new BorderLayout());
         attrEditorPanel = new AttrEditorPanel(new SaveButtonAction());
         add(attrEditorPanel, BorderLayout.SOUTH);
@@ -45,19 +48,27 @@ public class AttrPanel extends MapPanel {
             String inputCountry = countryInputField.getText().trim();
             if (!inputCountry.isEmpty() && countries.containsKey(inputCountry)) {
                 selectedCountry = countries.get(inputCountry);
-
-                // Set the visibility of the attribute editor panel
                 attrEditorPanel.setVisible(true);
-
-                // Clear attribute fields when a new country is selected
-                clearAttributeFields();
-
+                populateAttributeFields();
                 repaint();
             }
         });
 
     }
+    private void populateAttributeFields() {
+        Optional<Country> matchingCountry = addedCountries.stream()
+                .filter(country -> country.getName().equals(selectedCountry.getName()))
+                .findFirst();
 
+        if (matchingCountry.isPresent()) {
+            Country countryFromList = matchingCountry.get();
+            attrEditorPanel.setFieldsText(countryFromList.getCapital(),
+                    countryFromList.getPopulation(), countryFromList.getHdi(),
+                    countryFromList.getCurrency(), countryFromList.getArea());
+        } else {
+            clearAttributeFields();
+        }
+    }
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -84,25 +95,31 @@ public class AttrPanel extends MapPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (selectedCountry != null) {
-                // Create a new Country object with entered attributes
-                Country editedCountry = new Country(selectedCountry.getName(), selectedCountry.getGeometry());
-                editedCountry.setCapital(attrEditorPanel.getCapital());
-                editedCountry.setPopulation(attrEditorPanel.getPopulation());
-                editedCountry.setHdi(attrEditorPanel.getHdi());
-                editedCountry.setCurrency(attrEditorPanel.getCurrency());
-                editedCountry.setArea(attrEditorPanel.getArea());
+                Optional<Country> matchingCountry = addedCountries.stream()
+                        .filter(country -> country.getName().equals(selectedCountry.getName()))
+                        .findFirst();
 
-                // Add the edited country to the list
-                addedCountries.add(editedCountry);
+                if (matchingCountry.isPresent()) {
+                    Country countryFromList = matchingCountry.get();
+                    countryFromList.setCapital(attrEditorPanel.getCapital());
+                    countryFromList.setPopulation(attrEditorPanel.getPopulation());
+                    countryFromList.setHdi(attrEditorPanel.getHdi());
+                    countryFromList.setCurrency(attrEditorPanel.getCurrency());
+                    countryFromList.setArea(attrEditorPanel.getArea());
+                } else {
+                    Country editedCountry = new Country(selectedCountry.getName(), selectedCountry.getGeometry());
+                    editedCountry.setCapital(attrEditorPanel.getCapital());
+                    editedCountry.setPopulation(attrEditorPanel.getPopulation());
+                    editedCountry.setHdi(attrEditorPanel.getHdi());
+                    editedCountry.setCurrency(attrEditorPanel.getCurrency());
+                    editedCountry.setArea(attrEditorPanel.getArea());
 
-                // Reset the attribute editor panel
-                attrEditorPanel.setVisible(false);
-                clearAttributeFields();
+                    addedCountries.add(editedCountry);
+                }
             }
         }
     }
     private void clearAttributeFields() {
-        // Clear the text fields in the attribute editor panel
         attrEditorPanel.setFieldsEmpty();
     }
 }

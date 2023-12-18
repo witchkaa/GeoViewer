@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class Country {
@@ -87,5 +88,30 @@ public class Country {
             }
         }
         return countries;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Country country = (Country) o;
+        return name.equals(country.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    @Override
+    public String toString() {
+        return "Country{" +
+                "name='" + name + '\'' +
+                ", capital='" + capital + '\'' +
+                ", population=" + population +
+                ", area=" + area +
+                ", currency='" + currency + '\'' +
+                ", hdi=" + hdi +
+                '}';
     }
 }

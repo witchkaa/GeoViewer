@@ -78,4 +78,11 @@ public class AttrEditorPanel extends JPanel {
         currencyField.setText(text);
         areaField.setText(text);
     }
+    public void setFieldsText(String capital, long population, float hdi, String currency, long area) {
+        capitalField.setText(capital);
+        populationField.setText(String.valueOf(population));
+        hdiField.setText(String.valueOf(hdi));
+        currencyField.setText(currency);
+        areaField.setText(String.valueOf(area));
+    }
 }
