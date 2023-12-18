@@ -7,12 +7,13 @@ import org.opengis.feature.simple.SimpleFeature;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 
-public class Country {
+public class Country implements Serializable {
     private String name;
     private Geometry geometry;
     private String capital;

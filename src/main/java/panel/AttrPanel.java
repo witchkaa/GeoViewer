@@ -1,28 +1,29 @@
 package panel;
 
 import country.Country;
+import country.DataSaver;
+import country.Serializator;
 import org.locationtech.jts.geom.Geometry;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class AttrPanel extends MapPanel {
-    private List<Country> addedCountries;
+    private final List<Country> addedCountries;
     private Country selectedCountry;
-    private AttrEditorPanel attrEditorPanel;
-    private JLabel enterLabel;
+    private final AttrEditorPanel attrEditorPanel;
+    DataSaver dataSaver = new Serializator();
     public AttrPanel() {
         try {
             countries = Country.loadCountries("src/main/resources/world.geojson");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        addedCountries = new ArrayList<>();
+        addedCountries = dataSaver.retrieveData();
         setLayout(new BorderLayout());
         attrEditorPanel = new AttrEditorPanel(new SaveButtonAction());
         add(attrEditorPanel, BorderLayout.SOUTH);
@@ -41,7 +42,7 @@ public class AttrPanel extends MapPanel {
                 repaint();
             }
         });
-        enterLabel = new JLabel("Enter country name: ");
+        JLabel enterLabel = new JLabel("Enter country name: ");
         topPanel.add(enterLabel);
         topPanel.add(countryInputField);
         countryInputField.addActionListener(e -> {
@@ -117,8 +118,10 @@ public class AttrPanel extends MapPanel {
                     addedCountries.add(editedCountry);
                 }
             }
+            dataSaver.saveData(addedCountries);
         }
     }
+
     private void clearAttributeFields() {
         attrEditorPanel.setFieldsEmpty();
     }
