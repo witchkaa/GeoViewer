@@ -1,19 +1,16 @@
 package panel;
 
 import country.Country;
-import country.DataSaver;
-import country.Serializator;
+import data.DataSaver;
+import data.Serializator;
 import org.locationtech.jts.geom.Geometry;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.Optional;
 
 public class AttrPanel extends MapPanel {
-    private final List<Country> addedCountries;
     private Country selectedCountry;
     private final AttrEditorPanel attrEditorPanel;
     DataSaver dataSaver = new Serializator();
@@ -23,7 +20,7 @@ public class AttrPanel extends MapPanel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        addedCountries = dataSaver.retrieveData();
+        dataSaver.retrieveData();
         setLayout(new BorderLayout());
         attrEditorPanel = new AttrEditorPanel(new SaveButtonAction());
         add(attrEditorPanel, BorderLayout.SOUTH);
@@ -57,15 +54,15 @@ public class AttrPanel extends MapPanel {
 
     }
     private void populateAttributeFields() {
-        Optional<Country> matchingCountry = addedCountries.stream()
-                .filter(country -> country.getName().equals(selectedCountry.getName()))
-                .findFirst();
-
-        if (matchingCountry.isPresent()) {
-            Country countryFromList = matchingCountry.get();
-            attrEditorPanel.setFieldsText(countryFromList.getCapital(),
-                    countryFromList.getPopulation(), countryFromList.getHdi(),
-                    countryFromList.getCurrency(), countryFromList.getArea());
+        if (selectedCountry != null) {
+            Country currCountry = dataSaver.isPresent(selectedCountry.getName());
+            if (currCountry != null) {
+                attrEditorPanel.setFieldsText(currCountry.getCapital(),
+                        currCountry.getPopulation(), currCountry.getHdi(),
+                        currCountry.getCurrency(), currCountry.getArea());
+            } else {
+                clearAttributeFields();
+            }
         } else {
             clearAttributeFields();
         }
@@ -96,32 +93,16 @@ public class AttrPanel extends MapPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (selectedCountry != null) {
-                Optional<Country> matchingCountry = addedCountries.stream()
-                        .filter(country -> country.getName().equals(selectedCountry.getName()))
-                        .findFirst();
-
-                if (matchingCountry.isPresent()) {
-                    Country countryFromList = matchingCountry.get();
-                    countryFromList.setCapital(attrEditorPanel.getCapital());
-                    countryFromList.setPopulation(attrEditorPanel.getPopulation());
-                    countryFromList.setHdi(attrEditorPanel.getHdi());
-                    countryFromList.setCurrency(attrEditorPanel.getCurrency());
-                    countryFromList.setArea(attrEditorPanel.getArea());
-                } else {
                     Country editedCountry = new Country(selectedCountry.getName(), selectedCountry.getGeometry());
                     editedCountry.setCapital(attrEditorPanel.getCapital());
                     editedCountry.setPopulation(attrEditorPanel.getPopulation());
                     editedCountry.setHdi(attrEditorPanel.getHdi());
                     editedCountry.setCurrency(attrEditorPanel.getCurrency());
                     editedCountry.setArea(attrEditorPanel.getArea());
-
-                    addedCountries.add(editedCountry);
+                    dataSaver.saveData(editedCountry);
                 }
             }
-            dataSaver.saveData(addedCountries);
         }
-    }
-
     private void clearAttributeFields() {
         attrEditorPanel.setFieldsEmpty();
     }

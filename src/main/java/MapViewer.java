@@ -9,7 +9,6 @@ public class MapViewer extends JFrame {
         setTitle("Country Explorer");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Create buttons
         JButton gameButton = new JButton("Play Game");
         JButton attributesButton = new JButton("Edit country Attributes");
 

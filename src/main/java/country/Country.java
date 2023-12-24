@@ -115,4 +115,11 @@ public class Country implements Serializable {
                 ", hdi=" + hdi +
                 '}';
     }
+    public void copyValuesFrom(Country sourceCountry) {
+        this.setCapital(sourceCountry.getCapital());
+        this.setCurrency(sourceCountry.getCurrency());
+        this.setArea(sourceCountry.getArea());
+        this.setHdi(sourceCountry.getHdi());
+        this.setPopulation(sourceCountry.getPopulation());
+    }
 }
